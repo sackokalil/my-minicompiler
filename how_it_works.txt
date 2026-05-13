@@ -1,0 +1,73 @@
+##########################################################################################################################
+##    HERE IS THE SHORT EXPLANATION OF THE PROGRAMM, This program computes or compiles the arithmetical expressions    ###
+##########################################################################################################################
+
+
+##################################
+#           SHELL                #
+#################################
+the file intitled "shell1.py" is the file where all starts, by executing this file, we have the possibility to give inputs.
+This file calls a function named "run" (located in the file "basic1.py" in run section) and gives it the inputs received
+with the name of the file(in this cas "stdin" wich denotes, it was typed by the user ).
+
+###################################
+#             RUN                 #
+###################################
+The function run in basic1.py file should receive the two parameters(the name of the file and the text or input properly said).
+the function create then a Lexer object and give him the name of the file and the text and ask the "make_tokens()"
+methode of this object to tokenize the text and wait to receive a list of tokens.
+NB: the name of the file is useful in case of error, it'll help to locate the exact place where the error occured
+
+####################################
+#        LEXER                     #
+####################################
+In his turn, tries the lexer to tokinize the text. It will Iterate through the list(the text) character by character
+checking if the latter is a NUMBER  or  an OPERATOR in what cases it will be added to a list of TOKENS taking into 
+account the type of the caracter(whether integer or float when number or which operator it is). In each iteration throught
+the list(the text), the index of advancement position is taken into account which will be used later in case of error
+ to print where exactly this is occured. At the end a list of TOKENS is returned to the RUN function in the case
+ where everything went well, otherwise errors are returned.
+
+ THE RUN FUNCTION PASSES THIS LIST OF TOKENS TO THE PARSE METHODE OF A PARSER OBJECT, WHICH HAS TO BUILD THE SYNTAX TREE BASING ON A GRAMMAR RULE
+ DIFINED IN THE FILE NAMED "grammar.txt".
+
+###############################################
+#                   PARSER                    #
+###############################################
+the parser initialise some important parameters and the token list will be iterated through progressively.
+The parse method of the parser will call the 'expr' method to construct the expression, which, in turn, will require the
+methods 'factor' and 'term' to return the respective parts of the expression. The latter will collaborate with the
+BinOpNode, UnaryOpNode, and NumberNode functions to take into account the order of operators' priority.
+During iterations, the index of advancement positions are taken into account, what will be passed to the error methodes
+in the event of errors occur.
+At the end of Iterations an ABSTRACT SYNTAX TREE IS BUILD. This abstract syntax tree will be then given to the methode 'generate' of the classe 'IntermediateCodeGenerator'.
+
+
+#############################################################################################
+#                           INTERMEDIATE CODE GENERATION                                    #
+#############################################################################################
+The methode 'generate' of 'IntermediateCodeGenerator' classe will receive the abstract syntax tree, 
+extract different nodes and according to these create different instructions( when the node is a BinOpNode, a 'PUSH' instruction will be created for each of the two operands(for exemple PUSH 5) 
+and  one of the five operations( ADD, SUB, MUL, DIV or POW) will be created for the operation according to the node.op_tok.type(the type of the operation)). 
+AFTER GENERATION OF THE INSTRUCTION, THIS LIST OF INSTRUCTION WILL BE PASSED TO THE 'ABSTRAKTSTACKMACHINE' CLASSE to be executed.
+
+#############################################################################################
+#                      ABSTRACTSTACKMACHINE : Abstrakte Kellermachine                       #
+#############################################################################################
+The methode 'execute' of abstracktstackmachine classe receive the list of instruction, create a stack where temporary 
+values will be added anytime a PUSH instruction is found in the list. If another operation instruction is found the machine execute 
+then the operation on the top temporary value of the stack(if the instruction is a unary operation, for exemple 'NEGATE'. when this is found then the last temporary value of the stack will be negated) 
+or on the top two temporary values of the stack(if the instruction found is a binary operation, for exemple 'ADD') and readd the result 
+on top of the stack. And after that the whole list is iterated and calculations are done in the stack, 
+the final result will be the all top value of the stack.
+
+
+
+
+
+
+              
+#########################################################################################
+#                                          END                                          #
+#########################################################################################
+
